@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
 import assets from '../assets/assets'
+import {useNavigate} from 'react-router-dom'
 
 const ProfilePage = () => {
+  const navigate = useNavigate()
   const [selectedImg, setSelectedImg] = useState(null)
   const [name, setName] = useState("John Doe")
   const [bio, setBio] = useState("Hi, I'm John Doe.")
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    navigate('/')
+  }
   return (
     <div className='min-h-screen bg-cover bg-no-repeat flex justify-center items-center'>
       <div className='w-5/6 max-w-2xl backdrop-blur-2xl border-2 border-gray-600 text-gray-300 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
-        <form className='flex flex-col gap-5 p-10 flex-1'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-5 p-10 flex-1'>
           <h2 className='text-lg'>Profile details</h2>
           <label htmlFor="avatar" className='flex items-center gap-2 cursor-pointer'>
             <input onChange={(e) => setSelectedImg(e.target.files[0])} type="file" id="avatar" accept='.png, .jpg, .jpeg' hidden/>
