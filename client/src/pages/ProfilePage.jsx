@@ -1,15 +1,27 @@
 import React, { useState } from 'react'
 import assets from '../assets/assets'
 import {useNavigate} from 'react-router-dom'
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
 
 const ProfilePage = () => {
+
+  const {authUser, updateProfile} = useContext(AuthContext)
+
   const navigate = useNavigate()
   const [selectedImg, setSelectedImg] = useState(null)
-  const [name, setName] = useState("John Doe")
-  const [bio, setBio] = useState("Hi, I'm John Doe.")
+  const [name, setName] = useState(authUser.fullName)
+  const [bio, setBio] = useState(authUser.bio)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    const formData = new FormData()
+    formData.append("fullName", name)
+    formData.append("bio", bio)
+    if(selectedImg) {
+      formData.append("avatar", selectedImg)
+    }
+    await updateProfile(formData)
     navigate('/')
   }
   return (
@@ -19,7 +31,7 @@ const ProfilePage = () => {
           <h2 className='text-lg'>Profile details</h2>
           <label htmlFor="avatar" className='flex items-center gap-2 cursor-pointer'>
             <input onChange={(e) => setSelectedImg(e.target.files[0])} type="file" id="avatar" accept='.png, .jpg, .jpeg' hidden/>
-            <img src={selectedImg ? URL.createObjectURL(selectedImg) : assets.avatar_icon} alt="" className={`w-15 h-15 ${selectedImg && 'rounded-full'}`}/>
+            <img src={selectedImg ? URL.createObjectURL(selectedImg) : authUser?.avatar?.url || assets.avatar_icon} alt="" className={`w-15 h-15 ${(selectedImg || authUser?.avatar?.url) && 'rounded-full'}`}/>
             upload profile image
           </label>
 

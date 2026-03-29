@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config({
-    path:"./.env"
-})
+import 'dotenv/config';
 import httpServer from './app.js';
 import connectDB from './db/index.js';
 
