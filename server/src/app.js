@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
-import {createServer} from 'http';
-import cookieParser from 'cookie-parser';
-import {Server} from 'socket.io';
+import express from "express";
+import cors from "cors";
+import { createServer } from "http";
+import cookieParser from "cookie-parser";
+import { Server } from "socket.io";
 
 //Create Express app and HTTP server
 const app = express();
@@ -10,55 +10,53 @@ const httpServer = createServer(app);
 
 //Initialize Socket.IO server
 export const io = new Server(httpServer, {
-    cors: {
-        origin: "*"
-    }
-})
+  cors: {
+    origin: "*",
+  },
+});
 
 //Store online users
-export const userSocketMap = {} // {userId: socketId}
+export const userSocketMap = {}; // {userId: socketId}
 
 //Handle Socket.IO connections
 io.on("connection", (socket) => {
-    const userId = socket.handshake.query.userId
-    console.log("User connected: ", userId)
+  const userId = socket.handshake.query.userId;
+  console.log("User connected: ", userId);
 
-    if(userId) {
-        userSocketMap[userId] = socket.id
-    }
-    
-    //Emit the list of online users to all clients
-    io.emit("getOnlineUsers", Object.keys(userSocketMap))
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+  }
 
-    //Handle disconnection
-    socket.on("disconnect", () => {
-        console.log("User disconnected: ", userId)
+  //Emit the list of online users to all clients
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-        //Remove user from online users map
-        delete userSocketMap[userId]
-        io.emit("getOnlineUsers", Object.keys(userSocketMap))
-    })
-})
+  //Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("User disconnected: ", userId);
+
+    //Remove user from online users map
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  });
+});
 
 //Middleware setup
-app.use(cors({
+app.use(
+  cors({
     origin: process.env.CORS_ORIGIN,
-    credentials: true 
-}))
-app.use(express.json({limit: "10mb"}))
-app.use(cookieParser())
-app.use(express.urlencoded({extended: true}))
-
+    credentials: true,
+  }),
+);
+app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 //routes import
-import userRouter from './routes/user.routes.js';
-import messageRouter from './routes/message.routes.js';
-
-
-
+import userRouter from "./routes/user.routes.js";
+import messageRouter from "./routes/message.routes.js";
 
 //routes declaration
-app.use("/api/auth", userRouter)
-app.use("/api/messages", messageRouter)
+app.use("/api/auth", userRouter);
+app.use("/api/messages", messageRouter);
 
 export default httpServer;

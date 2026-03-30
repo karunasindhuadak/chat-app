@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import assets, { userDummyData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Sidebar = ({ selectedUser, setSelectedUser }) => {
+  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   return (
     <div
@@ -10,7 +12,11 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
     >
       <div className="pb-5">
         <div className="flex justify-between items-center">
-          <img src={assets.logo} alt="logo" className="max-w-40" />
+          <img
+            src={assets.logo}
+            alt="logo"
+            className="max-w-40"
+          />
           <div className="py-2 relative group">
             <img
               src={assets.menu_icon}
@@ -25,13 +31,22 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                 Edit Profile
               </p>
               <hr className="my-2 border-t border-gray-500" />
-              <p className="text-sm cursor-pointer">Logout</p>
+              <p
+                onClick={() => logout()}
+                className="text-sm cursor-pointer"
+              >
+                Logout
+              </p>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 mt-5 px-4 py-3 bg-[#282142] rounded-full">
-          <img src={assets.search_icon} alt="Search" className="w-3" />
+          <img
+            src={assets.search_icon}
+            alt="Search"
+            className="w-3"
+          />
           <input
             type="text"
             className="flex-1 border-none outline-none bg-transparent text-white text-xs placeholder:text-gray-300"
@@ -43,7 +58,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
       <div className="flex flex-col gap-2">
         {userDummyData.map((user, index) => (
           <div
-            onClick={() => (setSelectedUser(user))}
+            onClick={() => setSelectedUser(user)}
             key={index}
             className={`relative flex gap-2 p-2 pl-4 rounded items-center text-sm sm:text-lg cursor-pointer ${selectedUser?._id === user._id && "bg-[#282142]/50"}`}
           >
