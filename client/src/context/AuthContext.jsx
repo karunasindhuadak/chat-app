@@ -73,7 +73,9 @@ export const AuthProvider = ({ children }) => {
   // Update profile function to handle user profile updates
   const updateProfile = async (body) => {
     try {
-      const { data } = await axios.put("/api/auth/update-profile", body);
+      const { data } = await axios.put("/api/auth/update-profile", body, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       if (data.success) {
         setAuthUser(data.data.user);

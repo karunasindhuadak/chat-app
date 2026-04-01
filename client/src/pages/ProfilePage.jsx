@@ -12,8 +12,11 @@ const ProfilePage = () => {
   const [name, setName] = useState(authUser.fullName);
   const [bio, setBio] = useState(authUser.bio);
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append("fullName", name);
     formData.append("bio", bio);
@@ -22,6 +25,7 @@ const ProfilePage = () => {
     }
     await updateProfile(formData);
     navigate("/");
+    setLoading(false);
   };
   return (
     <div className="min-h-screen bg-cover bg-no-repeat flex justify-center items-center">
@@ -36,7 +40,11 @@ const ProfilePage = () => {
             className="flex items-center gap-2 cursor-pointer"
           >
             <input
-              onChange={(e) => setSelectedImg(e.target.files[0])}
+              onChange={(e) => {
+                if (selectedImg)
+                  URL.revokeObjectURL(URL.createObjectURL(selectedImg)); // free old blob
+                setSelectedImg(e.target.files[0]);
+              }}
               type="file"
               id="avatar"
               accept=".png, .jpg, .jpeg"
@@ -75,11 +83,15 @@ const ProfilePage = () => {
             type="submit"
             className="bg-gradient-to-r from-purple-400 to-violet-600 text-white p-2 rounded-lg text-lg cursor-pointer"
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </form>
         <img
-          src={authUser?.avatar?.url || assets.logo_icon}
+          src={
+            selectedImg
+              ? URL.createObjectURL(selectedImg)
+              : authUser?.avatar?.url || assets.logo_icon
+          }
           alt=""
           className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && "rounded-full"}`}
         />

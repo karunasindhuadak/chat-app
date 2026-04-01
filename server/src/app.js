@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
 //Middleware setup
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN?.split(","),
     credentials: true,
   }),
 );
