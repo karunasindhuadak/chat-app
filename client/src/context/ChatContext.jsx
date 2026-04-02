@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,12 @@ export const ChatProvider = ({ children }) => {
   const [unseenMessages, setUnseenMessages] = useState({}); // {userId: count}
 
   const { axios, socket } = useContext(AuthContext);
+
+  // Ref to always have the latest selectedUser inside the socket callback
+  const selectedUserRef = useRef(null);
+  useEffect(() => {
+    selectedUserRef.current = selectedUser;
+  }, [selectedUser]);
 
   //  function to get all user for sidebar
   const getUsers = async () => {
@@ -57,10 +63,14 @@ export const ChatProvider = ({ children }) => {
     }
   };
   // function to subscribe to messages for selected user
-  const subscribeToMessages = async () => {
+  const subscribeToMessages = () => {
     if (!socket) return;
     socket.on("newMessage", (newMessage) => {
-      if (selectedUser && newMessage.senderId === selectedUser._id) {
+      const currentSelectedUser = selectedUserRef.current;
+      if (
+        currentSelectedUser &&
+        newMessage.senderId === currentSelectedUser._id
+      ) {
         newMessage.seen = true;
         setMessages((prevMessages) => [...prevMessages, newMessage]);
         axios.put(`/api/messages/mark/${newMessage._id}`);
@@ -82,7 +92,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     subscribeToMessages();
     return () => unsubscribeFromMessages();
-  }, [socket, selectedUser]);
+  }, [socket]);
 
   const value = {
     messages,

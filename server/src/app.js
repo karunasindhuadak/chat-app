@@ -59,4 +59,16 @@ import messageRouter from "./routes/message.routes.js";
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 
+// Global error handler — catches ApiError and other thrown errors
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+    errors: err.errors || [],
+  });
+});
+
 export default httpServer;

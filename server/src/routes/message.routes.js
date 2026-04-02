@@ -12,7 +12,7 @@ const messageRouter = Router();
 
 messageRouter.get("/users", verifyJWT, getUserforSlidebar);
 messageRouter.get("/:id", verifyJWT, getMessages);
-messageRouter.get("/mark/:id", verifyJWT, markMessageAsSeen);
+messageRouter.put("/mark/:id", verifyJWT, markMessageAsSeen);
 messageRouter.post("/send/:id", verifyJWT, upload.single("image"), sendMessage);
 
 export default messageRouter;

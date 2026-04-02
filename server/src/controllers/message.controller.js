@@ -84,17 +84,16 @@ const markMessageAsSeen = asyncHandler(async (req, res) => {
   if (!message.seen) {
     message.seen = true;
     await message.save();
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, {}, "Message marked as seen successfully"),
+      );
   }
   return res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        {},
-        message.seen
-          ? "Message marked as seen successfully"
-          : "Message already marked as seen",
-      ),
+      new ApiResponse(200, {}, "Message already marked as seen"),
     );
 });
 
