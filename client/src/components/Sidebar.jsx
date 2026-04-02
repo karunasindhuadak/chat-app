@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -16,6 +16,23 @@ const Sidebar = () => {
   const { logout, onlineUsers } = useContext(AuthContext);
   const navigate = useNavigate();
   const [input, setInput] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when tapping outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
   const filteredUsers = input
     ? users.filter((user) =>
         user.fullName.toLowerCase().includes(input.toLowerCase()),
@@ -35,27 +52,36 @@ const Sidebar = () => {
             alt="logo"
             className="max-w-40 max-h-9"
           />
-          <div className="py-2 relative group">
+          <div className="py-2 relative" ref={menuRef}>
             <img
               src={assets.menu_icon}
               alt="menu"
               className="max-h-5 cursor-pointer"
+              onClick={() => setMenuVisible((prev) => !prev)}
             />
-            <div className="absolute top-full right-0 z-20 w-32 border border-white/10 rounded-lg bg-[#1a1530]/95 backdrop-blur-md text-gray-200 p-4 hidden group-hover:block">
-              <p
-                onClick={() => navigate("/profile")}
-                className="text-sm cursor-pointer hover:text-violet-400"
-              >
-                Edit Profile
-              </p>
-              <hr className="my-2 border-t border-white/10" />
-              <p
-                onClick={() => logout()}
-                className="text-sm cursor-pointer hover:text-violet-400"
-              >
-                Logout
-              </p>
-            </div>
+            {menuVisible && (
+              <div className="absolute top-full right-0 z-20 w-32 border border-white/10 rounded-lg bg-[#1a1530]/95 backdrop-blur-md text-gray-200 p-4">
+                <p
+                  onClick={() => {
+                    navigate("/profile");
+                    setMenuVisible(false);
+                  }}
+                  className="text-sm cursor-pointer hover:text-violet-400"
+                >
+                  Edit Profile
+                </p>
+                <hr className="my-2 border-t border-white/10" />
+                <p
+                  onClick={() => {
+                    logout();
+                    setMenuVisible(false);
+                  }}
+                  className="text-sm cursor-pointer hover:text-violet-400"
+                >
+                  Logout
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
