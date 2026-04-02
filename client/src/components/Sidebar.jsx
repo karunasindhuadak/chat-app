@@ -33,7 +33,7 @@ const Sidebar = () => {
           <img
             src={assets.logo}
             alt="logo"
-            className="max-w-40"
+            className="max-w-40 max-h-9"
           />
           <div className="py-2 relative group">
             <img
@@ -110,3 +110,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
