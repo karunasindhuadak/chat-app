@@ -40,7 +40,7 @@ const Sidebar = () => {
     : users;
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [onlineUsers]);
   return (
     <div
       className={`bg-black/20 h-full overflow-y-scroll p-5 text-white border-r border-white/10 ${selectedUser ? "max-md:hidden" : ""}`}
@@ -52,7 +52,10 @@ const Sidebar = () => {
             alt="logo"
             className="max-w-40 max-h-9"
           />
-          <div className="py-2 relative" ref={menuRef}>
+          <div
+            className="py-2 relative"
+            ref={menuRef}
+          >
             <img
               src={assets.menu_icon}
               alt="menu"
@@ -136,4 +139,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
