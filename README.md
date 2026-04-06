@@ -29,24 +29,6 @@ profile, and see online/offline status of other users.
 | File Store | Cloudinary + Multer                           |
 | Deployment | Vercel (frontend) + Render (backend)          |
 
-## 📁 Project Structure
-
-├── client/ # React frontend
-│ ├── src/
-│ │ ├── components/ # ChatContainer, Sidebar, RightSidebar
-│ │ ├── context/ # AuthContext, ChatContext
-│ │ ├── pages/ # HomePage, LoginPage, ProfilePage
-│ │ └── lib/ # Utility functions
-│ └── ...
-├── server/ # Express backend
-│ ├── src/
-│ │ ├── controllers/ # User & Message controllers
-│ │ ├── models/ # User & Message Mongoose models
-│ │ ├── middlewares/ # Auth & multer middlewares
-│ │ ├── routes/ # API routes
-│ │ └── utils/ # ApiError, ApiResponse, Cloudinary, asyncHandler
-│ └── ...
-
 ## 🚀 Getting Started
 
 ### Prerequisites
